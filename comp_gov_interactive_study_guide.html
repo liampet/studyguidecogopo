@@ -1,230 +1,1217 @@
-<h2 class="sr-only">Interactive comparative government study guide with sections for core concepts, UK, Russia, Iran, and China, plus flippable flashcards and a self-test progress tracker</h2>
-<div style="padding: 1rem 0;">
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comp Gov Final — Study Guide</title>
+<style>
+  [data-theme="light"] {
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --surface-2: #efece4;
+    --text: #1f1f1d;
+    --text-soft: #5c5b55;
+    --text-faint: #908e86;
+    --border: #e3e0d6;
+    --border-strong: #cdc9bb;
+    --danger: #a32d2d;
+    --danger-bg: #fcebeb;
+    --danger-border: #f0a0a0;
+    --good: #3b6d11;
+    --good-bg: #eaf3de;
+    --good-border: #b4cf85;
+    --concepts: #6c4ce0; --concepts-bg: #efedfe; --concepts-soft: #ddd8fb;
+    --uk: #1f6fd0; --uk-bg: #e6f1fb; --uk-soft: #cfe2f5;
+    --russia: #c0392b; --russia-bg: #fbeae8; --russia-soft: #f4d4cf;
+    --iran: #0f7d54; --iran-bg: #e2f4ed; --iran-soft: #c9e8da;
+    --china: #c4760f; --china-bg: #fcefd9; --china-soft: #f4dcb3;
+    --shadow: rgba(40,38,32,.10);
+  }
+  [data-theme="dark"] {
+    --bg: #16151a;
+    --surface: #232228;
+    --surface-2: #2d2c34;
+    --text: #f0eff2;
+    --text-soft: #b8b6c0;
+    --text-faint: #86848f;
+    --border: #36353e;
+    --border-strong: #4a4954;
+    --danger: #ff9d9d;
+    --danger-bg: #3a1f22;
+    --danger-border: #7a3a3e;
+    --good: #9fd06a;
+    --good-bg: #233015;
+    --good-border: #46651f;
+    --concepts: #a692f5; --concepts-bg: #2a2547; --concepts-soft: #3c3660;
+    --uk: #6fb0ef; --uk-bg: #1a2e47; --uk-soft: #2a4061;
+    --russia: #f08a7c; --russia-bg: #3d211d; --russia-soft: #56322c;
+    --iran: #5cc497; --iran-bg: #16382a; --iran-soft: #234d3a;
+    --china: #efb05f; --china-bg: #3d2e12; --china-soft: #56411d;
+    --shadow: rgba(0,0,0,.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background .25s, color .25s;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 22px 18px 80px; }
 
-<div id="navbar" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.25rem;"></div>
+  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .theme-btn {
+    padding: 7px 13px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+    background: var(--surface); color: var(--text);
+    border: 1.5px solid var(--border-strong); border-radius: 999px;
+  }
 
-<div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 10px;">
-  <span style="font-size: 12px; color: var(--color-text-secondary); white-space: nowrap;">Mastery</span>
-  <div style="flex: 1; height: 6px; background: var(--color-background-tertiary); border-radius: 999px; overflow: hidden;">
-    <div id="masterbar" style="height: 100%; width: 0%; background: var(--color-text-success); transition: width 0.25s;"></div>
+  header {
+    border-radius: 14px;
+    padding: 19px 22px;
+    margin-bottom: 16px;
+    background: var(--accentBg);
+    border: 1px solid var(--accentSoft);
+    transition: background .25s, border-color .25s;
+  }
+  h1 { font-size: 21px; font-weight: 700; color: var(--accent); transition: color .25s; }
+  .sub { font-size: 13px; color: var(--text-soft); margin-top: 5px; }
+
+  .progress-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 16px;
+    margin-bottom: 16px;
+  }
+  .progress-row { display: flex; align-items: center; gap: 12px; }
+  .progress-label { font-size: 12px; font-weight: 600; color: var(--text-soft); white-space: nowrap; }
+  .bar-track { flex: 1; height: 9px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+  .bar-fill {
+    height: 100%; width: 0%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--concepts), var(--uk), var(--iran), var(--china));
+    transition: width .4s ease;
+  }
+  .progress-count { font-size: 12px; font-weight: 600; color: var(--text-soft); white-space: nowrap; min-width: 92px; text-align: right; }
+  .reset-btn {
+    background: none; border: none; color: var(--text-faint);
+    font-size: 11px; cursor: pointer; margin-top: 9px; text-decoration: underline;
+  }
+
+  nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .tab {
+    padding: 9px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+    background: var(--surface); color: var(--tabColor);
+    border: 1.5px solid var(--tabColor); border-radius: 9px;
+    transition: transform .1s;
+  }
+  .tab:hover { transform: translateY(-1px); }
+  .tab.active { background: var(--tabColor); color: #fff; }
+
+  .mode-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
+  .mode-btn {
+    flex: 1; padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer;
+    background: var(--surface); color: var(--text);
+    border: 1.5px solid var(--border-strong); border-radius: 9px;
+  }
+  .mode-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .intro {
+    font-size: 13px; color: var(--text-soft);
+    background: var(--accentBg);
+    border-left: 4px solid var(--accent);
+    padding: 11px 14px; border-radius: 0 9px 9px 0;
+    margin-bottom: 14px;
+  }
+  .section-count { font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 14px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--accent);
+    border-radius: 4px 11px 11px 4px;
+    padding: 15px 17px;
+    margin-bottom: 11px;
+    transition: box-shadow .15s;
+  }
+  .card:hover { box-shadow: 0 4px 14px var(--shadow); }
+  .card.known { border-left-color: var(--good); background: var(--good-bg); }
+  .card-q {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 10px; cursor: pointer;
+  }
+  .card-q-text { font-size: 14.5px; font-weight: 700; line-height: 1.45; }
+  .chev {
+    font-size: 11px; color: #fff; background: var(--accent);
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .2s; flex-shrink: 0; user-select: none;
+  }
+  .card.known .chev { background: var(--good); }
+  .chev.open { transform: rotate(180deg); }
+  .card-body { display: none; margin-top: 11px; }
+  .card-body.show { display: block; }
+  .answer { font-size: 14px; line-height: 1.62; }
+  .bullets { margin: 10px 0 0; padding: 0; list-style: none; }
+  .bullets li {
+    font-size: 13.5px; line-height: 1.55; color: var(--text);
+    padding: 4px 0 4px 18px; position: relative;
+  }
+  .bullets li::before {
+    content: ""; position: absolute; left: 2px; top: 11px;
+    width: 7px; height: 7px; border-radius: 2px;
+    background: var(--accent);
+  }
+  .flag {
+    margin-top: 11px; padding: 9px 11px;
+    background: var(--danger-bg); border: 1px solid var(--danger-border);
+    border-radius: 8px;
+    font-size: 12.5px; line-height: 1.5; color: var(--danger);
+    display: flex; gap: 7px;
+  }
+  .flag-icon { font-weight: 700; flex-shrink: 0; }
+  .mark-btn {
+    margin-top: 12px; padding: 7px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 8px;
+  }
+  .mark-btn.is-known { background: var(--good); }
+
+  .quiz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 5px solid var(--accent);
+    border-radius: 4px 4px 12px 12px;
+    padding: 19px;
+  }
+  .quiz-progress { font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 10px; }
+  .quiz-q { font-size: 16px; font-weight: 700; line-height: 1.5; margin-bottom: 16px; }
+  .quiz-answer { display: none; }
+  .quiz-answer.show { display: block; }
+  .quiz-answer-box {
+    background: var(--accentBg); border: 1px solid var(--accentSoft);
+    border-radius: 9px; padding: 12px 14px;
+    font-size: 14px; line-height: 1.6; margin-bottom: 14px;
+  }
+  .quiz-answer-box .bullets li::before { background: var(--accent); }
+  .quiz-btn {
+    padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer;
+    border-radius: 9px; border: 1.5px solid var(--border-strong);
+    background: var(--surface); color: var(--text);
+  }
+  .quiz-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .quiz-btn.good { background: var(--good); color: #fff; border-color: var(--good); }
+  .quiz-btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .quiz-score { font-size: 13px; color: var(--text-soft); margin-top: 14px; }
+  .quiz-done { text-align: center; padding: 20px 10px; }
+  .quiz-done-score { font-size: 34px; font-weight: 700; margin: 8px 0; color: var(--accent); }
+
+  footer { margin-top: 38px; font-size: 12px; color: var(--text-faint); text-align: center; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <span style="font-size:12px;color:var(--text-faint);font-weight:600;">CoGoPo Final Prep</span>
+    <button class="theme-btn" id="themeBtn">Dark mode</button>
   </div>
-  <span id="mastertext" style="font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; min-width: 86px; text-align: right;">0 of 0 cards</span>
-</div>
 
-<div id="content"></div>
+  <header id="header">
+    <h1>Comparative Government — Final Study Guide</h1>
+    <p class="sub">Core concepts · UK · Russia · Iran · China. Tap a card for full bullet-point detail. Red flags = fixes from your diagnostic.</p>
+  </header>
 
+  <div class="progress-card">
+    <div class="progress-row">
+      <span class="progress-label">Mastery</span>
+      <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+      <span class="progress-count" id="barCount">0 of 0</span>
+    </div>
+    <button class="reset-btn" id="resetBtn">Reset all progress</button>
+  </div>
+
+  <nav id="nav"></nav>
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="modeStudy">Study cards</button>
+    <button class="mode-btn" id="modeQuiz">Quiz me</button>
+  </div>
+
+  <div id="content"></div>
+
+  <footer>
+    Progress and your theme choice save automatically in this browser.<br>
+    Built for tomorrow's final — good luck, Liam.
+  </footer>
 </div>
 
 <script>
-const RED = "var(--color-text-danger)";
-
-const DATA = {
+var DATA = {
   concepts: {
     label: "Core concepts",
-    icon: "ti-book",
-    intro: "Unit 1 vocabulary. These terms show up in every country's questions — examiners love making you name the type or sort the system.",
+    intro: "Unit 1 vocabulary. These show up in every country's questions \u2014 examiners love making you name the type or sort the system. Master these and you can attack any SRQ.",
     cards: [
-      {q: "Weber's three types of legitimacy", a: "Traditional, charismatic, and rational-legal (legal-rational). NOTE: 'religious' is NOT one of them — that was your error.", flag: "You invented a 4th type on the diagnostic."},
-      {q: "Iran's legitimacy type", a: "Traditional — authority rooted in long-standing custom and belief (here, religious tradition). The category is still called 'traditional'.", flag: "You had this as 'religious' — fix it."},
-      {q: "China's legitimacy type", a: "Rational-legal — the CCP's authority runs through institutional rules, bureaucracy, and increasingly performance/economic delivery.", flag: "You had China as 'traditional' — it's rational-legal."},
-      {q: "Charismatic legitimacy", a: "Authority derived from the personal appeal, heroism, or perceived exceptional qualities of an individual leader."},
-      {q: "Legitimacy — definition", a: "The widely held belief that a government has the right to rule and that its authority should be obeyed."},
-      {q: "Unitary vs. federal system", a: "Unitary = power concentrated in the central government. Federal = power constitutionally divided between national and regional governments."},
-      {q: "Sort the 4 countries: federal or unitary?", a: "Federal: Russia (80+ federal subjects). Unitary: UK, Iran, China. The UK is tricky — technically unitary but with devolution, so 'quasi-federal'.", flag: "You had China as federal — wrong. Russia is the federal one."},
-      {q: "Illiberal / managed democracy", a: "Elections happen, but civil liberties, press freedom, and fair competition are constrained. Russia is the textbook 'managed democracy'."},
-      {q: "Is China an illiberal democracy?", a: "Usually classified as authoritarian, NOT an illiberal democracy — there is no competitive national election at all. Russia and Iran fit 'illiberal' better."},
-      {q: "Authoritarian vs. democratic regime", a: "Authoritarian = power concentrated, limited or no meaningful political competition, restricted rights. Democratic = competitive elections, civil liberties, rule of law."},
-      {q: "Rule of law", a: "The principle that all people and institutions — including the government — are subject to and accountable under the law, applied equally."},
-      {q: "Sovereignty", a: "Supreme authority within a territory — the power to govern without external interference."},
-      {q: "Regime vs. government vs. state", a: "State = the permanent territory + institutions. Regime = the system/rules for exercising power. Government = the specific people in office right now."},
-      {q: "Political socialization", a: "The process by which citizens learn and absorb political values, beliefs, and norms — via family, schools, media, religion."}
+      {
+        q: "Weber's three types of legitimacy",
+        a: "Max Weber identified three sources from which a government's right to rule can be seen as valid. 'Religious' is NOT one of them \u2014 religion-based authority falls under 'traditional'.",
+        bullets: [
+          "Traditional \u2014 authority from long-established customs, history, and inherited belief (monarchies, theocracies).",
+          "Charismatic \u2014 authority from the extraordinary personal qualities, vision, or appeal of an individual leader.",
+          "Rational-legal \u2014 authority from a system of written rules, laws, and institutional procedures, not from the person.",
+          "Most real regimes blend types; the exam wants the DOMINANT one."
+        ],
+        flag: "You invented a 4th type ('religious') on the diagnostic. There are only three."
+      },
+      {
+        q: "Iran's legitimacy type",
+        a: "Iran rests primarily on TRADITIONAL legitimacy \u2014 its authority is rooted in long-standing religious belief and the principle of clerical guardianship. The category is 'traditional' even though the tradition is religious.",
+        bullets: [
+          "The Supreme Leader's authority is justified by velayat-e faqih ('guardianship of the jurist').",
+          "Some charismatic legitimacy too \u2014 Ayatollah Khomeini personally embodied the 1979 revolution.",
+          "Performance/output legitimacy is weak: economic struggles erode public trust."
+        ],
+        flag: "You labeled this 'religious' \u2014 the correct Weber category is 'traditional'."
+      },
+      {
+        q: "China's legitimacy type",
+        a: "China rests primarily on RATIONAL-LEGAL legitimacy plus strong performance (output) legitimacy \u2014 the CCP claims the right to rule through its institutional rules and its record of delivering growth and stability.",
+        bullets: [
+          "Rational-legal: authority runs through party rules, the constitution, and bureaucratic procedure.",
+          "Performance legitimacy: decades of rapid economic growth and rising living standards.",
+          "Some charismatic elements under Mao, revived somewhat under Xi.",
+          "Nationalism is also used as a legitimacy source."
+        ],
+        flag: "You labeled China 'traditional' \u2014 it's rational-legal (with heavy performance legitimacy)."
+      },
+      {
+        q: "Charismatic legitimacy \u2014 detail",
+        a: "Authority derived from the personal magnetism, heroism, or perceived exceptional qualities of an individual leader, rather than from rules or tradition.",
+        bullets: [
+          "Tends to be unstable \u2014 it can collapse when the leader dies or fails.",
+          "Often gets 'routinized' into traditional or rational-legal forms over time.",
+          "Examples: Khomeini in Iran, Mao in early China."
+        ]
+      },
+      {
+        q: "Legitimacy \u2014 definition and why it matters",
+        a: "Legitimacy is the widely held belief that a government has the RIGHT to rule and that its authority should be obeyed voluntarily.",
+        bullets: [
+          "A regime with legitimacy can govern without constant force.",
+          "A regime low on legitimacy must rely on coercion, surveillance, and repression.",
+          "Legitimacy can be built through elections, ideology, religion, tradition, or delivering results."
+        ]
+      },
+      {
+        q: "Unitary vs. federal system",
+        a: "This is about WHERE constitutional power lives \u2014 concentrated centrally or divided between levels.",
+        bullets: [
+          "Unitary \u2014 sovereignty and power held by the central government; any regional power is granted (and can be taken back) by the center.",
+          "Federal \u2014 power is constitutionally DIVIDED between a national government and regional units; regions have protected powers the center cannot simply remove.",
+          "Devolution \u2014 a middle path: a unitary state hands powers to regions but keeps ultimate sovereignty (the UK)."
+        ]
+      },
+      {
+        q: "Sort the 4 countries: federal or unitary?",
+        a: "Federal: RUSSIA. Unitary: UK, IRAN, CHINA. The UK is the tricky one.",
+        bullets: [
+          "Russia \u2014 federal, with 80+ federal subjects (republics, oblasts, krais).",
+          "China \u2014 unitary, despite its size; provinces answer to the center.",
+          "Iran \u2014 unitary; provinces have little independent power.",
+          "UK \u2014 technically unitary, but devolution makes it 'quasi-federal' or a 'unitary state with devolution'."
+        ],
+        flag: "You ranked China as most federal \u2014 wrong. Russia is the federal one; China is unitary."
+      },
+      {
+        q: "Illiberal / managed democracy",
+        a: "A system that holds elections and has the outward forms of democracy, but where civil liberties, press freedom, and fair competition are constrained so real power isn't genuinely at stake.",
+        bullets: [
+          "Elections happen but the outcome is effectively pre-managed.",
+          "Russia is the textbook 'managed democracy'.",
+          "Sometimes called 'hybrid regime' \u2014 between full democracy and full authoritarianism."
+        ]
+      },
+      {
+        q: "Is China an illiberal democracy?",
+        a: "No \u2014 China is best classified as AUTHORITARIAN, not an illiberal democracy. There is no competitive national election for the country's leadership at all.",
+        bullets: [
+          "Russia and Iran hold contested (if unfair) elections \u2014 'illiberal democracy' fits them better.",
+          "China's NPC is not competitively elected in a meaningful sense.",
+          "Use 'authoritarian one-party state' for China."
+        ]
+      },
+      {
+        q: "Authoritarian vs. democratic regime",
+        a: "The core distinction is whether power is genuinely contestable and rights are protected.",
+        bullets: [
+          "Democratic \u2014 free and fair competitive elections, civil liberties, rule of law, peaceful transfer of power.",
+          "Authoritarian \u2014 power concentrated, little or no meaningful competition, restricted rights, leaders not truly accountable to voters.",
+          "Totalitarian (extreme authoritarian) \u2014 the state seeks to control nearly all of public AND private life."
+        ]
+      },
+      {
+        q: "Rule of law",
+        a: "The principle that all people and institutions \u2014 including the government itself \u2014 are subject to and accountable under the law, applied equally and predictably.",
+        bullets: [
+          "Contrasts with 'rule BY law', where rulers use law as a tool but stand above it.",
+          "China and Iran practice rule by law more than rule of law.",
+          "An independent judiciary is essential to genuine rule of law."
+        ]
+      },
+      {
+        q: "Sovereignty",
+        a: "Supreme authority within a territory \u2014 the power to govern without external interference.",
+        bullets: [
+          "Internal sovereignty \u2014 final authority over what happens inside the state.",
+          "External sovereignty \u2014 recognition as independent by other states.",
+          "In the UK, sovereignty famously rests with Parliament."
+        ]
+      },
+      {
+        q: "Regime vs. government vs. state",
+        a: "Three terms students constantly confuse \u2014 keep them distinct.",
+        bullets: [
+          "State \u2014 the permanent entity: territory, population, institutions, sovereignty. Outlasts any leader.",
+          "Regime \u2014 the system or set of rules for how power is organized and exercised (e.g. 'authoritarian regime').",
+          "Government \u2014 the specific people/party in office right now; changes often."
+        ]
+      },
+      {
+        q: "Political socialization",
+        a: "The lifelong process by which citizens absorb political values, beliefs, identities, and norms.",
+        bullets: [
+          "Agents: family, schools, religion, media, peers, the state itself.",
+          "Authoritarian regimes use schools and state media heavily to shape loyalty.",
+          "China's patriotic education campaigns are a clear example."
+        ]
+      },
+      {
+        q: "Political legitimacy vs. political efficacy",
+        a: "Two different ideas that sound similar.",
+        bullets: [
+          "Legitimacy \u2014 belief that the government has the right to rule.",
+          "Political efficacy \u2014 a citizen's belief that their participation actually matters and can influence outcomes.",
+          "Authoritarian regimes can have legitimacy while citizens still feel low efficacy."
+        ]
+      },
+      {
+        q: "Civil society",
+        a: "The web of voluntary groups and organizations \u2014 NGOs, unions, religious groups, media, charities \u2014 that exist independently of the state.",
+        bullets: [
+          "A strong, independent civil society supports democracy.",
+          "Authoritarian regimes restrict or co-opt civil society (e.g. Russia's 'foreign agent' laws targeting NGOs).",
+          "China keeps civil society tightly under party supervision."
+        ]
+      }
     ]
   },
   uk: {
     label: "UK",
-    icon: "ti-building-bank",
-    intro: "Your strongest unit — but you skipped parliamentary sovereignty and got devolution partly wrong. Lock those down.",
+    intro: "Your strongest unit \u2014 but you skipped parliamentary sovereignty and got devolution partly wrong. Lock down the institutions and the 'fusion of powers' logic.",
     cards: [
-      {q: "Parliamentary sovereignty", a: "Parliament is the supreme legal authority — it can make or unmake any law, no Parliament can bind a future one, and no court can strike down an Act of Parliament.", flag: "You skipped this on the diagnostic — it's core."},
-      {q: "What has eroded parliamentary sovereignty?", a: "EU membership (while it lasted), devolution, the Human Rights Act, the creation of the UK Supreme Court, and the growing use of referendums. Name any ONE for an SRQ."},
-      {q: "Devolution", a: "The transfer of certain powers from the central UK Parliament to regional bodies — while sovereignty technically stays with Westminster."},
-      {q: "Which bodies did devolution create?", a: "The Scottish Parliament, the Welsh Senedd (Welsh Parliament), and the Northern Ireland Assembly. The House of Commons is NOT a devolved body.", flag: "You named the House of Commons — wrong, that's the main UK Parliament."},
-      {q: "How does a UK PM gain power?", a: "The PM is the leader of the party that holds a majority in the House of Commons; the monarch formally invites them to form a government."},
-      {q: "Vote of no confidence", a: "The House of Commons formally declaring it no longer supports the government — which can force the PM to resign or trigger a general election. NOT the same as impeachment.", flag: "You called it 'impeachment' — impeachment removes one official for wrongdoing; this is about losing the government's mandate."},
-      {q: "House of Commons vs. House of Lords", a: "Commons = elected, holds real legislative power. Lords = unelected (appointed/hereditary), revises and delays but cannot ultimately block Commons legislation."},
-      {q: "Fusion of powers", a: "In the UK, the executive (PM + Cabinet) is drawn from and sits inside the legislature — unlike the separation of powers in a presidential system."},
-      {q: "UK constitution — key feature", a: "Uncodified — not written in a single document. Made up of statutes, conventions, common law, and authoritative works."}
+      {
+        q: "Parliamentary sovereignty",
+        a: "The bedrock principle of the UK constitution: Parliament is the supreme legal authority in the country.",
+        bullets: [
+          "Parliament can make or unmake ANY law.",
+          "No Parliament can bind a future Parliament \u2014 a later one can always reverse an earlier one.",
+          "No court can strike down an Act of Parliament as unconstitutional.",
+          "Contrast with the US, where the Supreme Court can void laws."
+        ],
+        flag: "You skipped this entirely on the diagnostic \u2014 it is THE core UK concept."
+      },
+      {
+        q: "What has eroded parliamentary sovereignty?",
+        a: "Several modern developments have chipped away at the principle in practice. Name any ONE clearly for an SRQ.",
+        bullets: [
+          "EU membership \u2014 EU law took precedence while the UK was a member (ended by Brexit).",
+          "Devolution \u2014 power handed to Scotland, Wales, and Northern Ireland.",
+          "The Human Rights Act 1998 \u2014 incorporated the European Convention on Human Rights.",
+          "Creation of the UK Supreme Court (2009) \u2014 a more visible, separate judiciary.",
+          "Referendums \u2014 popular votes (Brexit, Scottish independence) create political pressure Parliament can't easily ignore."
+        ]
+      },
+      {
+        q: "Devolution",
+        a: "The transfer of certain powers from the central UK Parliament at Westminster to regional bodies \u2014 while legal sovereignty technically remains with Westminster.",
+        bullets: [
+          "It is NOT federalism \u2014 Westminster could in theory reclaim the powers.",
+          "Powers devolved include areas like health, education, and some taxation.",
+          "Asymmetric \u2014 different regions got different powers.",
+          "England has no separate devolved parliament of its own."
+        ]
+      },
+      {
+        q: "Which bodies did devolution create?",
+        a: "Devolution created three regional legislatures. The House of Commons is NOT one of them.",
+        bullets: [
+          "The Scottish Parliament (Holyrood).",
+          "The Welsh Senedd (Welsh Parliament).",
+          "The Northern Ireland Assembly (Stormont).",
+          "The House of Commons is the main UK-wide Parliament, not a devolved body."
+        ],
+        flag: "You named the House of Commons \u2014 wrong. It is the central UK legislature."
+      },
+      {
+        q: "How a UK PM gains and loses power",
+        a: "The PM is not directly elected by the public \u2014 they emerge from Parliament.",
+        bullets: [
+          "GAIN: become leader of the party that wins a majority of seats in the House of Commons; the monarch then formally invites them to form a government.",
+          "LOSE: lose a general election, be replaced as party leader, resign, or lose a vote of no confidence.",
+          "The PM must keep the 'confidence' of the Commons to stay in office."
+        ]
+      },
+      {
+        q: "Vote of no confidence",
+        a: "A formal Commons vote declaring it no longer supports the government. It is NOT the same as impeachment.",
+        bullets: [
+          "If the government loses, the PM may have to resign or call a general election.",
+          "It is about the government losing its MANDATE, not about punishing wrongdoing.",
+          "Impeachment (a US concept) removes one official for misconduct \u2014 different thing entirely."
+        ],
+        flag: "You called it 'impeachment'. Keep these separate \u2014 examiners test this."
+      },
+      {
+        q: "House of Commons vs. House of Lords",
+        a: "The UK Parliament is bicameral, but the two houses are very unequal.",
+        bullets: [
+          "House of Commons \u2014 ELECTED; holds the real legislative power; the government is drawn from it.",
+          "House of Lords \u2014 UNELECTED (life peers, some hereditary peers, bishops); revises and delays legislation.",
+          "The Lords can delay but ultimately cannot block Commons legislation (Parliament Acts).",
+          "The Commons' supremacy reflects its democratic mandate."
+        ]
+      },
+      {
+        q: "Fusion of powers",
+        a: "In the UK, the executive and legislature are FUSED, not separated \u2014 the PM and Cabinet are themselves sitting members of Parliament.",
+        bullets: [
+          "Contrast with the US 'separation of powers'.",
+          "The executive is drawn from and accountable to the legislature.",
+          "This usually lets a majority government pass its agenda relatively easily.",
+          "Checks come more from party, media, and elections than from a separate branch."
+        ]
+      },
+      {
+        q: "UK constitution \u2014 key features",
+        a: "The UK has no single written constitutional document.",
+        bullets: [
+          "UNCODIFIED \u2014 not contained in one document.",
+          "Sources: statute law, common law, conventions (unwritten rules), and authoritative works.",
+          "FLEXIBLE \u2014 can be changed by an ordinary Act of Parliament, no special procedure.",
+          "Contrast with codified, rigid constitutions like the US."
+        ]
+      },
+      {
+        q: "The monarch's role",
+        a: "The UK is a constitutional monarchy \u2014 the monarch is head of state but holds almost no real political power.",
+        bullets: [
+          "Role is largely ceremonial and symbolic.",
+          "Formally appoints the PM, opens Parliament, grants royal assent to laws.",
+          "By convention, the monarch acts on the advice of the elected government.",
+          "Provides continuity and a non-partisan symbol of the state."
+        ]
+      },
+      {
+        q: "First-past-the-post (FPTP)",
+        a: "The UK's electoral system for general elections: the candidate with the most votes in each constituency wins the seat.",
+        bullets: [
+          "Tends to produce single-party majority governments.",
+          "Favors large parties; disadvantages smaller parties spread thinly across the country.",
+          "Can produce a big seat majority on well under 50% of the national vote.",
+          "Criticized as disproportional; defended for producing stable government."
+        ]
+      },
+      {
+        q: "Brexit \u2014 significance for the exam",
+        a: "The 2016 referendum vote to leave the EU, completed in 2020, is a key case study.",
+        bullets: [
+          "Restored EU-related powers to the UK Parliament \u2014 reinforced parliamentary sovereignty.",
+          "Showed the growing political force of referendums.",
+          "Created tension with Scotland (which voted Remain) \u2014 fueled independence debate.",
+          "Illustrates direct democracy clashing with representative democracy."
+        ]
+      }
     ]
   },
   russia: {
     label: "Russia",
-    icon: "ti-shield-half",
-    intro: "You know the 'power follows Putin' instinct — good. But you skipped the power vertical and were vague on control mechanisms.",
+    intro: "You know the 'power follows Putin' instinct \u2014 good. But you skipped the power vertical and were vague on the control mechanisms. Get specific and name things.",
     cards: [
-      {q: "Russia's semi-presidential system", a: "A directly elected president PLUS a prime minister accountable to the legislature (Duma). On paper power is split; in practice it concentrates wherever Putin sits."},
-      {q: "Power vertical (vertikal)", a: "Putin's system of top-down, centralized control running from the Kremlin down through every level of government.", flag: "You skipped this — it's a likely SRQ topic."},
-      {q: "How was the power vertical built?", a: "Bringing regional governors under central control, reining in independent media and oligarchs, and making all institutions answer upward to the president."},
-      {q: "How does Russia control elections?", a: "Barring or jailing opposition candidates, manipulating the vote, and using state resources to favor the ruling party.", flag: "Be specific — 'making it hard for press' is too vague for marks."},
-      {q: "How does Russia control media?", a: "State ownership/control of major TV and press, plus 'foreign agent' laws restricting independent media and NGOs."},
-      {q: "United Russia", a: "Putin's dominant 'party of power' — holds a legislative supermajority and functions to deliver his agenda rather than to compete openly. Unlike a Western party, it faces no real competition."},
-      {q: "State Duma", a: "The lower house of Russia's Federal Assembly — the elected legislature. In practice dominated by United Russia and largely compliant with the Kremlin."},
-      {q: "Managed democracy (applied to Russia)", a: "The forms of democracy exist — elections, parties, a constitution — but outcomes are controlled from the top so genuine competition is hollowed out."},
-      {q: "Russia: federal in name", a: "Russia is constitutionally federal (80+ federal subjects), but the power vertical means real authority flows up to the center — federalism is weak in practice."}
+      {
+        q: "Russia's semi-presidential system",
+        a: "Russia formally has BOTH a directly elected president AND a prime minister accountable to the legislature \u2014 a semi-presidential structure.",
+        bullets: [
+          "President \u2014 directly elected, head of state, controls foreign policy and security.",
+          "Prime Minister \u2014 heads the government day-to-day, accountable to the Duma.",
+          "On paper power is split; in practice it concentrates wherever Putin sits.",
+          "When Putin was PM (2008\u201312), the PM role was the powerful one \u2014 proof power follows the man, not the office."
+        ]
+      },
+      {
+        q: "Power vertical (vertikal)",
+        a: "Putin's system of top-down, centralized control running from the Kremlin down through every level of government and society.",
+        bullets: [
+          "Goal: ensure all institutions answer UPWARD to the president.",
+          "Weakens genuine federalism and regional independence.",
+          "The structural backbone of Russia's 'managed democracy'.",
+          "Built deliberately after the chaotic, decentralized 1990s under Yeltsin."
+        ],
+        flag: "You skipped this \u2014 it's a very likely SRQ topic. Memorize the definition."
+      },
+      {
+        q: "How was the power vertical built?",
+        a: "Putin centralized power through a series of deliberate moves in the 2000s.",
+        bullets: [
+          "Brought regional governors under central control (for years they were appointed, not elected).",
+          "Reined in independent media \u2014 took major TV networks under state influence.",
+          "Curbed the oligarchs \u2014 those who stayed out of politics kept wealth; those who challenged him (e.g. Khodorkovsky) were prosecuted.",
+          "Used the dominant party, United Russia, to control the legislature."
+        ]
+      },
+      {
+        q: "How does Russia control elections?",
+        a: "Elections are held and votes are counted, but competition is not genuinely fair \u2014 be SPECIFIC about the mechanisms.",
+        bullets: [
+          "Barring or disqualifying opposition candidates before the vote.",
+          "Jailing or sidelining opposition leaders.",
+          "Using state resources and state media to boost the ruling party.",
+          "Vote manipulation and ballot irregularities reported by observers."
+        ],
+        flag: "Your diagnostic answer ('hard for press') was too vague \u2014 name concrete mechanisms."
+      },
+      {
+        q: "How does Russia control the media?",
+        a: "The Kremlin shapes the information environment through ownership and law.",
+        bullets: [
+          "State ownership or control of the major national TV channels \u2014 most Russians' main news source.",
+          "'Foreign agent' laws that burden and stigmatize independent outlets and NGOs.",
+          "Pressure, censorship, and legal harassment of remaining independent journalists.",
+          "Tight control tightened further after 2022."
+        ]
+      },
+      {
+        q: "United Russia",
+        a: "Putin's dominant 'party of power' \u2014 it holds a legislative supermajority and exists to deliver his agenda, not to compete openly.",
+        bullets: [
+          "Unlike a Western party, it faces no real electoral competition.",
+          "It is a vehicle for the regime, not an independent ideological movement.",
+          "Controls the State Duma and ensures the legislature backs the Kremlin.",
+          "'Party of power' = a party built around the existing leadership rather than a program."
+        ]
+      },
+      {
+        q: "The Federal Assembly: Duma and Federation Council",
+        a: "Russia's legislature is bicameral.",
+        bullets: [
+          "State Duma \u2014 lower house, elected; dominated by United Russia; largely compliant with the Kremlin.",
+          "Federation Council \u2014 upper house, represents the federal subjects (regions).",
+          "In practice the legislature rarely blocks the executive.",
+          "Often described as a 'rubber stamp' for Kremlin priorities."
+        ]
+      },
+      {
+        q: "Managed democracy (applied to Russia)",
+        a: "The forms of democracy exist \u2014 elections, parties, a constitution, courts \u2014 but outcomes are controlled from the top so genuine competition is hollowed out.",
+        bullets: [
+          "Also called a 'hybrid regime' \u2014 between democracy and full authoritarianism.",
+          "Citizens vote, but the meaningful result is decided in advance.",
+          "The democratic facade provides legitimacy without real accountability."
+        ]
+      },
+      {
+        q: "Russia: federal in name, centralized in practice",
+        a: "Russia is constitutionally a federation, but the power vertical hollows out real federalism.",
+        bullets: [
+          "80+ federal subjects: republics, oblasts, krais, federal cities.",
+          "Some republics (e.g. Chechnya, Tatarstan) have distinct ethnic/regional identities.",
+          "Real authority still flows up to the Kremlin \u2014 'asymmetric' and weak federalism.",
+          "Contrast with genuine federations where regions have protected, independent power."
+        ]
+      },
+      {
+        q: "2020 constitutional amendments",
+        a: "Constitutional changes approved in 2020 reset presidential term limits, allowing Putin to potentially remain in power well beyond previous limits.",
+        bullets: [
+          "Effectively 'zeroed out' Putin's previous terms.",
+          "A clear example of changing the rules to entrench a leader.",
+          "Compare directly with China removing Xi's term limits in 2018."
+        ]
+      },
+      {
+        q: "Siloviki",
+        a: "Members of Russia's security, military, and intelligence services who hold significant political and economic influence.",
+        bullets: [
+          "Many top officials have backgrounds in the security services (like Putin, ex-KGB).",
+          "They form a key pillar of regime support.",
+          "Their prominence reflects the security-state character of the regime."
+        ]
+      }
     ]
   },
   iran: {
     label: "Iran",
-    icon: "ti-mosque",
-    intro: "Your weakest area and the most SRQ-likely. You tangled the Assembly of Experts, Guardian Council, and Supreme Leader. Drill this until the chain is automatic.",
+    intro: "Your weakest area and the MOST SRQ-likely. You tangled the Assembly of Experts, Guardian Council, and Supreme Leader. Drill the structure until the chain is automatic \u2014 this is where your points are.",
     cards: [
-      {q: "Iran's dual structure", a: "A theocracy with elected institutions layered under unelected clerical bodies. Real power sits with the unelected side."},
-      {q: "The Supreme Leader", a: "Ali Khamenei — the highest authority in Iran. Controls the armed forces, judiciary, and state media, and sets overall policy. Outranks the elected president.", flag: "Spelling: Khamenei."},
-      {q: "Who selects the Supreme Leader?", a: "The Assembly of Experts — a body of clerics that elects, supervises, and can in theory remove the Supreme Leader.", flag: "You said the Guardian Council — WRONG. It's the Assembly of Experts."},
-      {q: "Assembly of Experts", a: "An elected body of clerics whose job is to choose, oversee, and potentially remove the Supreme Leader. Its candidates are themselves vetted by the Guardian Council."},
-      {q: "Guardian Council — what does it do?", a: "Two jobs: (1) VETS candidates for president, parliament, and the Assembly of Experts; (2) reviews all legislation for compliance with Islamic law and the constitution.", flag: "You said it 'selects the Supreme Leader' — wrong. That's the Assembly of Experts."},
-      {q: "Why is the Guardian Council's vetting power so important?", a: "It filters out reformist candidates BEFORE elections happen — so elections can be real (votes counted) but not free (choices pre-screened)."},
-      {q: "President of Iran", a: "Directly elected, runs the day-to-day government and economy — but is subordinate to the Supreme Leader and works only within boundaries the unelected bodies allow."},
-      {q: "Majlis", a: "Iran's directly elected parliament (legislature). It passes laws — but those laws must clear the Guardian Council."},
-      {q: "The closed-loop memory hook", a: "People elect the Assembly of Experts, which picks the Supreme Leader, who appoints half the Guardian Council, which vets who the people are allowed to elect. A closed loop."},
-      {q: "2009 Green Movement", a: "Mass protests after the disputed re-election of Ahmadinejad, met with a crackdown. Signaled deep public discontent; the regime hardened in response."}
+      {
+        q: "Iran's dual structure \u2014 the big picture",
+        a: "Iran is a theocracy with elected institutions layered UNDER unelected clerical bodies. Both sides exist; real power sits with the unelected clerical side.",
+        bullets: [
+          "UNELECTED side: Supreme Leader, Guardian Council, Assembly of Experts, judiciary.",
+          "ELECTED side: President, Majlis (parliament), and (technically elected) Assembly of Experts.",
+          "The unelected bodies can override or filter the elected ones.",
+          "This layering is the heart of almost every Iran SRQ."
+        ]
+      },
+      {
+        q: "The Supreme Leader",
+        a: "Ali Khamenei \u2014 the highest authority in Iran, a position above the elected president.",
+        bullets: [
+          "Commander-in-chief of the armed forces.",
+          "Controls the judiciary and state broadcasting.",
+          "Sets the overall direction of domestic and foreign policy.",
+          "Serves for life; can in theory be removed by the Assembly of Experts.",
+          "Justified by velayat-e faqih \u2014 'guardianship of the Islamic jurist'."
+        ]
+      },
+      {
+        q: "Who selects the Supreme Leader?",
+        a: "The ASSEMBLY OF EXPERTS selects (and can in theory supervise and remove) the Supreme Leader. NOT the Guardian Council.",
+        bullets: [
+          "The Assembly of Experts is a body of senior clerics.",
+          "It is itself directly elected by the public \u2014 but only from candidates the Guardian Council approved.",
+          "So even the body that picks the Supreme Leader is pre-filtered."
+        ],
+        flag: "You said the Guardian Council selects the Supreme Leader \u2014 WRONG. It's the Assembly of Experts."
+      },
+      {
+        q: "Assembly of Experts",
+        a: "An elected body of clerics whose constitutional job is to choose, oversee, and potentially remove the Supreme Leader.",
+        bullets: [
+          "Directly elected by the public for 8-year terms.",
+          "Candidates are vetted by the Guardian Council \u2014 so it is not freely competitive.",
+          "In practice it has never removed a Supreme Leader.",
+          "Don't confuse it with the Guardian Council \u2014 different body, different job."
+        ]
+      },
+      {
+        q: "Guardian Council \u2014 what it actually does",
+        a: "A 12-member body with TWO major powers. It does NOT select the Supreme Leader.",
+        bullets: [
+          "Composition: 6 clerics appointed by the Supreme Leader + 6 jurists nominated by the judiciary, approved by parliament.",
+          "POWER 1 \u2014 vets/approves candidates for president, the Majlis, and the Assembly of Experts.",
+          "POWER 2 \u2014 reviews all legislation passed by the Majlis for compliance with Islamic law and the constitution; can reject it.",
+          "Effectively a gatekeeper over both elections and laws."
+        ],
+        flag: "You said it 'selects the Supreme Leader' \u2014 wrong. That's the Assembly of Experts."
+      },
+      {
+        q: "Why the Guardian Council's vetting power matters so much",
+        a: "Because it filters out reformist and unwanted candidates BEFORE the public ever votes.",
+        bullets: [
+          "Elections can be real (votes counted) but not free (choices pre-screened).",
+          "It ensures the 'elected' branches stay within clerically approved limits.",
+          "It is the single most powerful tool keeping the system closed.",
+          "A great SRQ answer for 'how does Iran limit democracy'."
+        ]
+      },
+      {
+        q: "President of Iran",
+        a: "The directly elected head of the elected branch \u2014 runs day-to-day government, but is subordinate to the Supreme Leader.",
+        bullets: [
+          "Directly elected by the public for 4-year terms (max two consecutive).",
+          "Handles the economy, budget, and administration.",
+          "Cannot override the Supreme Leader or the unelected bodies.",
+          "Candidates must be approved by the Guardian Council first.",
+          "Note: Iran abolished the separate PM post in 1989 \u2014 the president now leads the executive."
+        ]
+      },
+      {
+        q: "Majlis (parliament)",
+        a: "Iran's directly elected legislature.",
+        bullets: [
+          "Members directly elected by the public.",
+          "Passes laws and approves the budget.",
+          "BUT all legislation must clear the Guardian Council.",
+          "Candidates are vetted by the Guardian Council before they can run."
+        ]
+      },
+      {
+        q: "The closed-loop memory hook",
+        a: "The whole system is a closed loop \u2014 trace it and you can answer almost any Iran structure question.",
+        bullets: [
+          "People elect the Assembly of Experts...",
+          "...which selects the Supreme Leader...",
+          "...who appoints half the Guardian Council (the 6 clerics)...",
+          "...which vets who the people are even allowed to elect.",
+          "The 'democracy' loops back into clerical control \u2014 that's the key insight."
+        ]
+      },
+      {
+        q: "2009 Green Movement",
+        a: "Mass protests after the disputed re-election of President Ahmadinejad, met with a heavy crackdown.",
+        bullets: [
+          "Protesters questioned the fairness of the result.",
+          "The regime responded with force, arrests, and repression.",
+          "Signaled deep public discontent with the system.",
+          "The regime hardened afterward to prevent a repeat."
+        ]
+      },
+      {
+        q: "Velayat-e faqih",
+        a: "'Guardianship of the Islamic jurist' \u2014 the founding ideological principle of the Islamic Republic.",
+        bullets: [
+          "Theorized by Ayatollah Khomeini, leader of the 1979 revolution.",
+          "Holds that a qualified senior cleric should hold ultimate political authority.",
+          "It is the doctrine that justifies the Supreme Leader's existence and power.",
+          "It is why Iran is classified as a theocracy."
+        ]
+      },
+      {
+        q: "The 1979 Iranian Revolution",
+        a: "The revolution that overthrew the Western-backed Shah and created the Islamic Republic.",
+        bullets: [
+          "Replaced a secular monarchy with a clerical theocracy.",
+          "Brought Ayatollah Khomeini to power as the first Supreme Leader.",
+          "Established the dual elected/unelected structure that still exists.",
+          "A foundational case study for Iran's regime type and legitimacy."
+        ]
+      },
+      {
+        q: "Iran's Revolutionary Guard (IRGC)",
+        a: "A powerful military and security force separate from the regular army, central to protecting the regime.",
+        bullets: [
+          "Answers directly to the Supreme Leader.",
+          "Has major economic interests and political influence.",
+          "Used to suppress internal dissent and project power abroad.",
+          "A key pillar of regime survival."
+        ]
+      }
     ]
   },
   china: {
     label: "China",
-    icon: "ti-star",
-    intro: "You had the right instincts on CCP-above-state, but reversed the NPC and the Politburo Standing Committee. Get that pair straight.",
+    intro: "You had the right instinct on CCP-above-state, but reversed the NPC and the Politburo Standing Committee. Get that pair straight and learn the party structure.",
     cards: [
-      {q: "CCP and the state — the relationship", a: "The Chinese Communist Party sits ABOVE the government: party organs parallel and direct every level of the state, the party sets policy the state executes, and top officials hold both party and state posts."},
-      {q: "National People's Congress (NPC)", a: "Constitutionally the 'highest organ of state power' — but in practice a rubber stamp that ratifies decisions already made by the party.", flag: "You said the NPC holds the real power — it doesn't."},
-      {q: "Politburo Standing Committee (PSC)", a: "The small group (around 7 people) at the very top of the CCP. THIS is where real power sits.", flag: "This is the real-power body, not the NPC."},
-      {q: "Xi Jinping and term limits (2018)", a: "In 2018 the NPC removed the two-term limit on the presidency, allowing Xi to rule indefinitely."},
-      {q: "Why do the 2018 term limits matter?", a: "They reversed the norm of orderly leadership succession that had held since Deng Xiaoping — concentrating power in one leader indefinitely."},
-      {q: "CCP control tool #1 — the Great Firewall", a: "China's system of internet censorship and control — blocking foreign sites and filtering content to limit access to information.", flag: "You wrote 'red firewall' — it's the Great Firewall."},
-      {q: "CCP control tool #2 — surveillance & social credit", a: "Mass surveillance and the social credit system monitor and shape citizen behavior; propaganda and education control public opinion."},
-      {q: "Democratic centralism", a: "The CCP's organizing principle: open debate is allowed internally, but once a decision is made everyone must publicly support it. In practice favors top-down control."},
-      {q: "Paramount leader", a: "The single most powerful figure in Chinese politics — currently Xi Jinping — typically holding the posts of party General Secretary, state President, and military chief simultaneously."}
+      {
+        q: "CCP and the state \u2014 the relationship",
+        a: "The Chinese Communist Party sits ABOVE the government. China is a one-party state where the party, not the formal government, holds real power.",
+        bullets: [
+          "Party organs parallel and direct every level of the state.",
+          "The party sets policy; the state apparatus executes it.",
+          "Top officials hold both party and state posts at once (Xi leads both).",
+          "'The party leads everything' is an explicit principle under Xi."
+        ]
+      },
+      {
+        q: "National People's Congress (NPC)",
+        a: "Constitutionally the 'highest organ of state power' \u2014 but in practice a RUBBER STAMP that ratifies decisions already made by the party.",
+        bullets: [
+          "Nearly 3,000 delegates; meets briefly once a year.",
+          "Formally passes laws, approves the budget, and elects state leaders.",
+          "It does not genuinely debate or block party decisions.",
+          "Real decisions are made beforehand within the CCP."
+        ],
+        flag: "You said the NPC holds the real power \u2014 it doesn't. It's the rubber stamp."
+      },
+      {
+        q: "Politburo Standing Committee (PSC)",
+        a: "The small group (around 7 members) at the very top of the CCP \u2014 THIS is where real power sits.",
+        bullets: [
+          "The most powerful body in China.",
+          "Sits above the wider ~24-member Politburo, which sits above the Central Committee.",
+          "Members are the country's true ruling elite.",
+          "Headed by the General Secretary (Xi Jinping)."
+        ],
+        flag: "This \u2014 not the NPC \u2014 is the real-power body. Don't mix them up."
+      },
+      {
+        q: "China's party hierarchy (top to bottom)",
+        a: "Power narrows as you go up the CCP pyramid.",
+        bullets: [
+          "National Party Congress \u2014 huge, meets every 5 years, largely symbolic.",
+          "Central Committee \u2014 a few hundred members.",
+          "Politburo \u2014 around 24 members.",
+          "Politburo Standing Committee \u2014 around 7 members; real power.",
+          "General Secretary \u2014 the single most powerful post."
+        ]
+      },
+      {
+        q: "Xi Jinping and term limits (2018)",
+        a: "In 2018 the NPC removed the two-term limit on the state presidency, allowing Xi Jinping to rule indefinitely.",
+        bullets: [
+          "Before 2018, the presidency was capped at two 5-year terms.",
+          "The change removed that cap.",
+          "It cleared the way for Xi to stay in power past the old limit.",
+          "Note: the General Secretary post never had a formal term limit anyway."
+        ]
+      },
+      {
+        q: "Why the 2018 term-limit change matters",
+        a: "It reversed the norm of orderly, regular leadership succession that had held since Deng Xiaoping.",
+        bullets: [
+          "Deng built succession norms to avoid another Mao-style strongman.",
+          "Removing the limit concentrates power in one leader indefinitely.",
+          "Signals a shift back toward personalized rule.",
+          "Compare directly with Russia's 2020 amendments resetting Putin's terms."
+        ]
+      },
+      {
+        q: "CCP control tool \u2014 the Great Firewall",
+        a: "China's vast system of internet censorship and control.",
+        bullets: [
+          "Blocks many foreign websites and platforms.",
+          "Filters and removes politically sensitive content.",
+          "Limits citizens' access to outside information.",
+          "Paired with an army of online censors and 'guided' commentary."
+        ],
+        flag: "You wrote 'red firewall' \u2014 the correct name is the Great Firewall."
+      },
+      {
+        q: "CCP control tool \u2014 surveillance and social credit",
+        a: "The state monitors and shapes citizen behavior through technology and incentives.",
+        bullets: [
+          "Extensive surveillance: cameras, facial recognition, data tracking.",
+          "Social credit systems reward or penalize behavior.",
+          "Especially intense monitoring in regions like Xinjiang.",
+          "Aims to make dissent visible and costly before it spreads."
+        ]
+      },
+      {
+        q: "Other CCP control tools",
+        a: "Beyond censorship and surveillance, the party shapes society in several ways.",
+        bullets: [
+          "Propaganda and 'patriotic education' in schools and media.",
+          "Suppression of dissidents, lawyers, and activists.",
+          "Control of religion and ethnic minority regions (Xinjiang, Tibet).",
+          "Co-opting or banning independent civil society groups."
+        ]
+      },
+      {
+        q: "Democratic centralism",
+        a: "The CCP's core organizing principle: internal debate is allowed, but once a decision is made everyone must publicly support it.",
+        bullets: [
+          "'Democratic' in the debate stage, 'centralist' in the obey stage.",
+          "In practice it strongly favors top-down control.",
+          "Lower party levels must obey higher levels.",
+          "Used to enforce unity and suppress open factional dissent."
+        ]
+      },
+      {
+        q: "Paramount leader",
+        a: "The single most powerful figure in Chinese politics \u2014 currently Xi Jinping.",
+        bullets: [
+          "Typically holds three top posts at once: party General Secretary, state President, and Chairman of the Central Military Commission.",
+          "The military post is arguably the most important \u2014 control of the army.",
+          "'Paramount leader' is an informal term for whoever truly dominates."
+        ]
+      },
+      {
+        q: "Mao Zedong and Deng Xiaoping \u2014 why they matter",
+        a: "Two foundational leaders whose legacies frame modern China.",
+        bullets: [
+          "Mao \u2014 led the 1949 revolution; era of personalized, often chaotic rule (Great Leap Forward, Cultural Revolution).",
+          "Deng \u2014 launched market reforms ('reform and opening') and built collective leadership and succession norms.",
+          "Xi is seen as moving away from Deng's collective model back toward concentrated power."
+        ]
+      },
+      {
+        q: "China's economic model",
+        a: "A state-led market economy \u2014 sometimes called 'socialism with Chinese characteristics' or state capitalism.",
+        bullets: [
+          "Market mechanisms and private business operate within party-set limits.",
+          "Major state-owned enterprises remain central.",
+          "Economic growth is a key source of the CCP's performance legitimacy.",
+          "The party can intervene in the economy whenever it chooses."
+        ]
+      }
     ]
   }
 };
 
-const state = {};
-let activeKey = "concepts";
-let totalCards = 0;
-Object.keys(DATA).forEach(k => DATA[k].cards.forEach((c, i) => { state[k + "-" + i] = false; totalCards++; }));
+</script>
+<script>
+var ORDER = ["concepts", "uk", "russia", "iran", "china"];
+var STORE_KEY = "compgov_progress_v2";
+var THEME_KEY = "compgov_theme";
+var activeKey = "concepts";
+var mode = "study";
 
-const navbar = document.getElementById("navbar");
-const content = document.getElementById("content");
+var known = {};
+try {
+  var saved = localStorage.getItem(STORE_KEY);
+  if (saved) known = JSON.parse(saved);
+} catch (e) { known = {}; }
 
-Object.keys(DATA).forEach(key => {
-  const btn = document.createElement("button");
-  btn.dataset.key = key;
-  btn.innerHTML = '<i class="ti ' + DATA[key].icon + '" style="font-size:15px; vertical-align:-2px; margin-right:5px" aria-hidden="true"></i>' + DATA[key].label;
-  btn.style.cssText = "padding: 7px 12px; font-size: 13px; font-weight: 500;";
-  btn.addEventListener("click", () => { activeKey = key; render(); });
-  navbar.appendChild(btn);
+try {
+  var t = localStorage.getItem(THEME_KEY);
+  if (t) document.documentElement.setAttribute("data-theme", t);
+} catch (e) {}
+
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(known)); } catch (e) {}
+}
+
+var totalCards = 0;
+ORDER.forEach(function(k){ totalCards += DATA[k].cards.length; });
+function cardId(key, i){ return key + "::" + i; }
+
+function applyTheme() {
+  var root = document.documentElement;
+  root.style.setProperty("--accent", "var(--" + activeKey + ")");
+  root.style.setProperty("--accentBg", "var(--" + activeKey + "-bg)");
+  root.style.setProperty("--accentSoft", "var(--" + activeKey + "-soft)");
+}
+
+function updateBar() {
+  var count = 0;
+  for (var id in known) { if (known[id]) count++; }
+  document.getElementById("barFill").style.width = (count / totalCards * 100) + "%";
+  document.getElementById("barCount").textContent = count + " of " + totalCards;
+}
+
+var themeBtn = document.getElementById("themeBtn");
+function syncThemeBtn() {
+  var dark = document.documentElement.getAttribute("data-theme") === "dark";
+  themeBtn.textContent = dark ? "Light mode" : "Dark mode";
+}
+syncThemeBtn();
+themeBtn.onclick = function(){
+  var dark = document.documentElement.getAttribute("data-theme") === "dark";
+  var next = dark ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+  syncThemeBtn();
+};
+
+var nav = document.getElementById("nav");
+ORDER.forEach(function(key){
+  var b = document.createElement("button");
+  b.className = "tab";
+  b.textContent = DATA[key].label;
+  b.style.setProperty("--tabColor", "var(--" + key + ")");
+  b.onclick = function(){ activeKey = key; quizState = null; render(); };
+  b.dataset.key = key;
+  nav.appendChild(b);
 });
 
-function updateMastery() {
-  const known = Object.values(state).filter(Boolean).length;
-  document.getElementById("masterbar").style.width = (known / totalCards * 100) + "%";
-  document.getElementById("mastertext").textContent = known + " of " + totalCards + " cards";
+document.getElementById("modeStudy").onclick = function(){ mode = "study"; render(); };
+document.getElementById("modeQuiz").onclick = function(){ mode = "quiz"; quizState = null; render(); };
+document.getElementById("resetBtn").onclick = function(){
+  if (confirm("Reset all progress on every section?")) {
+    known = {}; save(); updateBar(); render();
+  }
+};
+
+function buildBullets(list) {
+  var ul = document.createElement("ul");
+  ul.className = "bullets";
+  list.forEach(function(b){
+    var li = document.createElement("li");
+    li.textContent = b;
+    ul.appendChild(li);
+  });
+  return ul;
 }
 
 function render() {
-  Array.from(navbar.children).forEach(b => {
-    const on = b.dataset.key === activeKey;
-    b.style.background = on ? "var(--color-background-info)" : "transparent";
-    b.style.color = on ? "var(--color-text-info)" : "var(--color-text-primary)";
-    b.style.borderColor = on ? "var(--color-border-info)" : "var(--color-border-secondary)";
+  applyTheme();
+  Array.prototype.forEach.call(nav.children, function(b){
+    b.className = "tab" + (b.dataset.key === activeKey ? " active" : "");
   });
+  document.getElementById("modeStudy").className = "mode-btn" + (mode === "study" ? " active" : "");
+  document.getElementById("modeQuiz").className = "mode-btn" + (mode === "quiz" ? " active" : "");
+  if (mode === "study") renderStudy(); else renderQuiz();
+  updateBar();
+}
 
-  const sec = DATA[activeKey];
+function renderStudy() {
+  var sec = DATA[activeKey];
+  var content = document.getElementById("content");
   content.innerHTML = "";
 
-  const intro = document.createElement("p");
+  var intro = document.createElement("p");
+  intro.className = "intro";
   intro.textContent = sec.intro;
-  intro.style.cssText = "font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0 0 1rem;";
   content.appendChild(intro);
 
-  const secKnown = sec.cards.filter((c, i) => state[activeKey + "-" + i]).length;
-  const counter = document.createElement("p");
-  counter.style.cssText = "font-size: 12px; color: var(--color-text-tertiary); margin: 0 0 1rem;";
+  var secKnown = 0;
+  sec.cards.forEach(function(c, i){ if (known[cardId(activeKey, i)]) secKnown++; });
+  var counter = document.createElement("p");
+  counter.className = "section-count";
   counter.textContent = secKnown + " of " + sec.cards.length + " marked known in this section";
   content.appendChild(counter);
 
-  sec.cards.forEach((card, i) => {
-    const id = activeKey + "-" + i;
-    const known = state[id];
+  sec.cards.forEach(function(card, i){
+    var id = cardId(activeKey, i);
+    var isKnown = !!known[id];
 
-    const wrap = document.createElement("div");
-    wrap.style.cssText = "background: var(--color-background-primary); border: 0.5px solid " + (known ? "var(--color-border-success)" : "var(--color-border-tertiary)") + "; border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px;";
+    var el = document.createElement("div");
+    el.className = "card" + (isKnown ? " known" : "");
 
-    const qrow = document.createElement("div");
-    qrow.style.cssText = "display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; cursor: pointer;";
+    var qRow = document.createElement("div");
+    qRow.className = "card-q";
+    var qText = document.createElement("span");
+    qText.className = "card-q-text";
+    qText.textContent = card.q;
+    var chev = document.createElement("span");
+    chev.className = "chev";
+    chev.textContent = "\u25BC";
+    qRow.appendChild(qText);
+    qRow.appendChild(chev);
+    el.appendChild(qRow);
 
-    const qtext = document.createElement("span");
-    qtext.style.cssText = "font-size: 14px; font-weight: 500; line-height: 1.5;";
-    qtext.textContent = card.q;
-    qrow.appendChild(qtext);
+    var body = document.createElement("div");
+    body.className = "card-body";
 
-    const chev = document.createElement("i");
-    chev.className = "ti ti-chevron-down";
-    chev.style.cssText = "font-size: 18px; color: var(--color-text-tertiary); flex-shrink: 0; transition: transform 0.2s;";
-    qrow.appendChild(chev);
-    wrap.appendChild(qrow);
-
-    const body = document.createElement("div");
-    body.style.cssText = "display: none; margin-top: 12px;";
-
-    const ans = document.createElement("p");
+    var ans = document.createElement("p");
+    ans.className = "answer";
     ans.textContent = card.a;
-    ans.style.cssText = "font-size: 14px; line-height: 1.65; margin: 0; color: var(--color-text-primary);";
     body.appendChild(ans);
 
+    if (card.bullets) body.appendChild(buildBullets(card.bullets));
+
     if (card.flag) {
-      const flag = document.createElement("div");
-      flag.style.cssText = "margin-top: 10px; padding: 8px 10px; background: var(--color-background-danger); border-radius: var(--border-radius-md); display: flex; gap: 8px; align-items: flex-start;";
-      flag.innerHTML = '<i class="ti ti-alert-triangle" style="font-size:15px; color:' + RED + '; flex-shrink:0; margin-top:1px" aria-hidden="true"></i><span style="font-size:12.5px; line-height:1.5; color:' + RED + '">' + card.flag + '</span>';
+      var flag = document.createElement("div");
+      flag.className = "flag";
+      var fi = document.createElement("span");
+      fi.className = "flag-icon";
+      fi.textContent = "\u26A0";
+      var ft = document.createElement("span");
+      ft.textContent = card.flag;
+      flag.appendChild(fi);
+      flag.appendChild(ft);
       body.appendChild(flag);
     }
 
-    const mark = document.createElement("button");
-    mark.style.cssText = "margin-top: 12px; padding: 6px 12px; font-size: 12.5px;";
-    function setMark() {
-      mark.innerHTML = state[id]
-        ? '<i class="ti ti-check" style="font-size:14px; vertical-align:-2px; margin-right:4px"></i>Known — tap to unmark'
-        : 'Mark as known';
-    }
-    setMark();
-    mark.addEventListener("click", e => {
+    var mark = document.createElement("button");
+    mark.className = "mark-btn" + (isKnown ? " is-known" : "");
+    mark.textContent = isKnown ? "\u2713 Known \u2014 tap to unmark" : "Mark as known";
+    mark.onclick = function(e){
       e.stopPropagation();
-      state[id] = !state[id];
-      setMark();
-      updateMastery();
+      known[id] = !known[id];
+      save();
       render();
-    });
+    };
     body.appendChild(mark);
-    wrap.appendChild(body);
+    el.appendChild(body);
 
-    qrow.addEventListener("click", () => {
-      const open = body.style.display === "block";
-      body.style.display = open ? "none" : "block";
-      chev.style.transform = open ? "rotate(0deg)" : "rotate(180deg)";
-    });
+    qRow.onclick = function(){
+      var open = body.classList.toggle("show");
+      chev.className = "chev" + (open ? " open" : "");
+    };
 
-    content.appendChild(wrap);
+    content.appendChild(el);
   });
+}
 
-  const quizBtn = document.createElement("button");
-  quizBtn.style.cssText = "width: 100%; margin-top: 8px; padding: 11px; font-weight: 500;";
-  quizBtn.innerHTML = 'Quiz me on ' + sec.label + ' ↗';
-  quizBtn.addEventListener("click", () => {
-    sendPrompt("Quiz me out loud on the " + sec.label + " section — ask me 6 questions one at a time, wait for my answer to each, then tell me if I'm right before the next one.");
-  });
-  content.appendChild(quizBtn);
+var quizState = null;
 
-  updateMastery();
+function renderQuiz() {
+  var content = document.getElementById("content");
+  content.innerHTML = "";
+  var sec = DATA[activeKey];
+
+  if (!quizState || quizState.key !== activeKey) {
+    var order = [];
+    for (var i = 0; i < sec.cards.length; i++) order.push(i);
+    for (var j = order.length - 1; j > 0; j--) {
+      var r = Math.floor(Math.random() * (j + 1));
+      var t = order[j]; order[j] = order[r]; order[r] = t;
+    }
+    quizState = { key: activeKey, order: order, pos: 0, score: 0, revealed: false };
+  }
+
+  if (quizState.pos >= quizState.order.length) {
+    var done = document.createElement("div");
+    done.className = "quiz-card quiz-done";
+    var pct = Math.round(quizState.score / quizState.order.length * 100);
+    done.innerHTML =
+      '<p style="font-size:14px;color:var(--text-soft)">' + DATA[activeKey].label + ' quiz complete</p>' +
+      '<p class="quiz-done-score">' + quizState.score + ' / ' + quizState.order.length + '</p>' +
+      '<p style="font-size:13px;color:var(--text-soft)">You rated yourself right on ' + pct + '% of these.</p>';
+    var again = document.createElement("button");
+    again.className = "quiz-btn primary";
+    again.style.marginTop = "16px";
+    again.textContent = "Restart this quiz";
+    again.onclick = function(){ quizState = null; render(); };
+    done.appendChild(again);
+    content.appendChild(done);
+    return;
+  }
+
+  var card = sec.cards[quizState.order[quizState.pos]];
+  var box = document.createElement("div");
+  box.className = "quiz-card";
+
+  var prog = document.createElement("p");
+  prog.className = "quiz-progress";
+  prog.textContent = "Question " + (quizState.pos + 1) + " of " + quizState.order.length + "  \u00B7  " + DATA[activeKey].label;
+  box.appendChild(prog);
+
+  var q = document.createElement("p");
+  q.className = "quiz-q";
+  q.textContent = card.q;
+  box.appendChild(q);
+
+  var ansWrap = document.createElement("div");
+  ansWrap.className = "quiz-answer" + (quizState.revealed ? " show" : "");
+
+  var ansBox = document.createElement("div");
+  ansBox.className = "quiz-answer-box";
+  var ansP = document.createElement("p");
+  ansP.textContent = card.a;
+  ansBox.appendChild(ansP);
+  if (card.bullets) ansBox.appendChild(buildBullets(card.bullets));
+  ansWrap.appendChild(ansBox);
+
+  if (card.flag) {
+    var flag = document.createElement("div");
+    flag.className = "flag";
+    flag.style.marginBottom = "14px";
+    flag.innerHTML = '<span class="flag-icon">\u26A0</span><span>' + card.flag + '</span>';
+    ansWrap.appendChild(flag);
+  }
+
+  var judgeRow = document.createElement("div");
+  judgeRow.className = "quiz-btn-row";
+  var gotIt = document.createElement("button");
+  gotIt.className = "quiz-btn good";
+  gotIt.textContent = "I got it right";
+  gotIt.onclick = function(){
+    quizState.score++;
+    known[cardId(activeKey, quizState.order[quizState.pos])] = true;
+    save();
+    quizState.pos++; quizState.revealed = false;
+    render();
+  };
+  var missed = document.createElement("button");
+  missed.className = "quiz-btn";
+  missed.textContent = "I missed it";
+  missed.onclick = function(){
+    quizState.pos++; quizState.revealed = false;
+    render();
+  };
+  judgeRow.appendChild(gotIt);
+  judgeRow.appendChild(missed);
+  ansWrap.appendChild(judgeRow);
+  box.appendChild(ansWrap);
+
+  if (!quizState.revealed) {
+    var reveal = document.createElement("button");
+    reveal.className = "quiz-btn primary";
+    reveal.textContent = "Show answer";
+    reveal.onclick = function(){ quizState.revealed = true; render(); };
+    box.appendChild(reveal);
+  }
+
+  var score = document.createElement("p");
+  score.className = "quiz-score";
+  score.textContent = "Score so far: " + quizState.score + " / " + quizState.pos;
+  box.appendChild(score);
+
+  content.appendChild(box);
 }
 
 render();
 </script>
+</body>
+</html>
